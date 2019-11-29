@@ -37,7 +37,7 @@
     "cpass": "^2.2.0",
     "inquirer": "^7.0.0",
     "mkdirp": "^0.5.1",
-    "node-sp-auth": "https://github.com/gusolsso/node-sp-auth/#ee2d653dcd9c14b113e4779af2e7860487093ce0"
+    "node-sp-auth": "https://github.com/gusolsso/node-sp-auth/#2d385d2a599a58ba05d6d370a2b6880bb4ac8439"
   },
   "devDependencies": {
     "@pnp/pnpjs": "^1.3.7",
