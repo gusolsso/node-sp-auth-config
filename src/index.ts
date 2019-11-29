@@ -9,7 +9,6 @@ import { getConfigFromEnvVariables } from './utils/env';
 
 // Step wizards
 import siteUrlWizard from './wizards/siteUrl';
-import strategyWizard from './wizards/chooseStrategy';
 import credentialsWizard from './wizards/askCredentials';
 import saveOnDiskWizard from './wizards/saveOnDisk';
 
@@ -70,8 +69,6 @@ export class AuthConfig {
     /* === Run Wizard === */
     // Step 1: Require SharePoint URL
     let answersResult = await siteUrlWizard(authContext, this.settings, {});
-    // Step 2: SharePoint Online/OnPremise autodetection
-    answersResult = await strategyWizard(authContext, this.settings, answersResult);
     // Step 3: Ask for strategy specific parameters
     answersResult = await credentialsWizard(authContext, this.settings, answersResult);
     // Step 4: Save on disk

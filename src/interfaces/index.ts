@@ -4,15 +4,7 @@ import { IAuthOptions } from 'node-sp-auth';
 
 import { IHooks } from './wizard';
 
-export type StrategyCode =
-  | 'OnPremiseAddinCredentials'
-  | 'OnpremiseUserCredentials'
-  | 'OnpremiseTmgCredentials'
-  | 'OnpremiseFbaCredentials'
-  | 'OnlineAddinCredentials'
-  | 'UserCredentials'
-  | 'AdfsUserCredentials'
-  | 'OnDemandCredentials';
+export type StrategyCode = 'OnpremiseTmgCredentials';
 
 export interface IAuthContext {
   siteUrl: string;
