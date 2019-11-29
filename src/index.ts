@@ -12,7 +12,7 @@ import siteUrlWizard from './wizards/siteUrl';
 import credentialsWizard from './wizards/askCredentials';
 import saveOnDiskWizard from './wizards/saveOnDisk';
 
-import { getStrategies } from './config'; // getTargetsTypes
+import { getStrategie } from './config'; // getTargetsTypes
 
 import {
   IAuthContext, IAuthContextSettings, IStrategyDictItem,
@@ -22,14 +22,11 @@ import {
 export class AuthConfig {
 
   private settings: IAuthConfigSettings;
-  // private targets: string[];
-  private strategies: IStrategyDictItem[];
   private context: IAuthContextSettings;
   private customData: any;
   private cpass: Cpass;
 
   constructor (settings: IAuthConfigSettings = {}) {
-    this.strategies = getStrategies();
     // this.targets = getTargetsTypes();
     const envMode = process.env.SPAUTH_ENV || process.env.NODE_ENV;
     const headlessMode = typeof settings.headlessMode !== 'undefined' ? settings.headlessMode : envMode === 'production';
@@ -132,21 +129,12 @@ export class AuthConfig {
 
     this.context = checkObj.jsonRawData as IAuthContextSettings;
 
-    let withPassword: boolean;
-    const strategies = this.strategies.filter(strategy => {
-      return strategy.id === this.context.strategy;
-    });
+    const strategies = getStrategie();
 
     const passwordPropertyName = getHiddenPropertyName(this.context);
 
-    if (strategies.length === 1) {
-      withPassword = strategies[0].withPassword;
-    } else {
-      withPassword = typeof this.context[passwordPropertyName] !== 'undefined';
-    }
-
     // Strategies with password
-    if (withPassword) {
+    if (strategies.withPassword) {
       const initialPassword = `${this.context[passwordPropertyName] || ''}`;
       if (!this.context[passwordPropertyName]) {
         checkObj.needPrompts = true;
@@ -167,25 +155,10 @@ export class AuthConfig {
     }
 
     // Verify strategy parameters
-    if (strategies.length === 1) {
-      if (!checkObj.needPrompts) {
-        checkObj.needPrompts = !strategies[0].verifyCallback(this.context.siteUrl, this.context);
-      }
-      return checkObj;
-    } else {
-      // No strategies found
-      if (checkObj.needPrompts) {
-        return checkObj;
-      } else {
-        try {
-          await this.tryAuth(checkObj.authContext);
-          // checkObj.needPrompts = false;
-        } catch (ex) {
-          checkObj.needPrompts = true;
-        }
-        return checkObj;
-      }
+    if (!checkObj.needPrompts) {
+      checkObj.needPrompts = !strategies[0].verifyCallback(this.context.siteUrl, this.context);
     }
+    return checkObj;
   }
 
   private getJsonContent = (filePath: string, jsonData?: IAuthOptions): { exists: boolean; jsonRawData: any } => {

@@ -34,7 +34,7 @@ export interface IAuthConfigSettings {
   defaultConfigPath?: string;
   encryptPassword?: boolean;
   saveConfigOnDisk?: boolean;
-  authOptions?: IAuthOptions;
+  authOptions?: IOnpremiseTmgCredentials;
   forcePrompts?: boolean;
   masterKey?: string;
   headlessMode?: boolean;
