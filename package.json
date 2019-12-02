@@ -5,6 +5,7 @@
   "main": "./dist/index.js",
   "typings": "./dist/index",
   "scripts": {
+    "prepare": "npm run build",
     "build": "rimraf ./dist && npm run lint && tsc -p .",
     "test:lib": "ts-node ./test/init.ts",
     "test:cli": "npm run build && node ./dist/cli init -p ./config/private.cli.json",
@@ -36,7 +37,7 @@
     "cpass": "^2.2.0",
     "inquirer": "^7.0.0",
     "mkdirp": "^0.5.1",
-    "node-sp-auth": "https://github.com/gusolsso/node-sp-auth/tarball/51c7b874e20923d595ce67b55da3a1b1ddb2c294"
+    "node-sp-auth": "https://github.com/gusolsso/node-sp-auth/#c963fb94f67d8fa2c430b5ce3c01b7f4967053a5"
   },
   "devDependencies": {
     "@pnp/pnpjs": "^1.3.7",

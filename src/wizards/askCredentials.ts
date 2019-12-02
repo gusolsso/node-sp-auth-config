@@ -6,7 +6,7 @@ import { defaultPasswordMask } from '../utils';
 import { IWizardCallback } from '../interfaces/wizard';
 
 const wizard: IWizardCallback = async (authContext, settings, answersAll = {}) => {
-  const onPremiseTmgCredentials = authContext.authOptions as IOnpremiseTmgCredentials;
+  const onPremiseTmgCredentials = authContext.authOptions;
   const promptFor: Question[] = [
     {
       name: 'username',
