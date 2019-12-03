@@ -1,10 +1,13 @@
-// Auth interfaces
-import { IOnpremiseTmgCredentials } from 'node-sp-auth';
-// Auth interfaces
-
 import { IHooks } from './wizard';
 
 export type StrategyCode = 'OnpremiseTmgCredentials';
+
+export interface IOnpremiseTmgCredentials {
+  username: string;
+  password: string;
+  curl: string;
+  tmg: boolean;
+}
 
 export interface IAuthContext {
   siteUrl: string;

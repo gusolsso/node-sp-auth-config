@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Cpass } from 'cpass';
-import { getAuth, IAuthOptions, IAuthResponse } from 'node-sp-auth';
 
 // Utils
 import { convertSettingsToAuthContext, saveConfigOnDisk, getHiddenPropertyName } from './utils';
@@ -16,7 +15,7 @@ import { getStrategie } from './config'; // getTargetsTypes
 
 import {
   IAuthContext, IAuthContextSettings, IStrategyDictItem,
-  IAuthConfigSettings, ICheckPromptsResponse
+  IAuthConfigSettings, ICheckPromptsResponse, IOnpremiseTmgCredentials
 } from './interfaces';
 
 export class AuthConfig {
@@ -74,10 +73,6 @@ export class AuthConfig {
     }
     answersResult = await saveOnDiskWizard(authContext, this.settings, answersResult);
     return convertSettingsToAuthContext(answersResult as any, this.settings);
-  }
-
-  private tryAuth = (authContext: IAuthContext): Promise<IAuthResponse> => {
-    return getAuth(authContext.siteUrl, authContext.authOptions) as any;
   }
 
   private checkForPrompts = async (): Promise<ICheckPromptsResponse> => {
@@ -161,7 +156,7 @@ export class AuthConfig {
     return checkObj;
   }
 
-  private getJsonContent = (filePath: string, jsonData?: IAuthOptions): { exists: boolean; jsonRawData: any } => {
+  private getJsonContent = (filePath: string, jsonData?: IOnpremiseTmgCredentials): { exists: boolean; jsonRawData: any } => {
     if (typeof jsonData === 'undefined') {
       const exists = fs.existsSync(filePath);
       let jsonRawData: any = {};
@@ -185,4 +180,3 @@ export class AuthConfig {
 }
 
 export { IAuthContext, IAuthConfigSettings } from './interfaces';
-export { IAuthOptions } from 'node-sp-auth';
