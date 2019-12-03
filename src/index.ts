@@ -124,12 +124,12 @@ export class AuthConfig {
 
     this.context = checkObj.jsonRawData as IAuthContextSettings;
 
-    const strategies = getStrategie();
+    const strategie = getStrategie();
 
     const passwordPropertyName = getHiddenPropertyName(this.context);
 
     // Strategies with password
-    if (strategies.withPassword) {
+    if (strategie.withPassword) {
       const initialPassword = `${this.context[passwordPropertyName] || ''}`;
       if (!this.context[passwordPropertyName]) {
         checkObj.needPrompts = true;
@@ -151,7 +151,7 @@ export class AuthConfig {
 
     // Verify strategy parameters
     if (!checkObj.needPrompts) {
-      checkObj.needPrompts = !strategies[0].verifyCallback(this.context.siteUrl, this.context);
+      checkObj.needPrompts = !strategie.verifyCallback(this.context.siteUrl, this.context);
     }
     return checkObj;
   }
