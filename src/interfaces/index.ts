@@ -1,23 +1,18 @@
-// Auth interfaces
-import { IAuthOptions } from 'node-sp-auth';
-// Auth interfaces
-
 import { IHooks } from './wizard';
 
-export type StrategyCode =
-  | 'OnPremiseAddinCredentials'
-  | 'OnpremiseUserCredentials'
-  | 'OnpremiseTmgCredentials'
-  | 'OnpremiseFbaCredentials'
-  | 'OnlineAddinCredentials'
-  | 'UserCredentials'
-  | 'AdfsUserCredentials'
-  | 'OnDemandCredentials';
+export type StrategyCode = 'OnpremiseTmgCredentials';
+
+export interface IOnpremiseTmgCredentials {
+  username: string;
+  password: string;
+  curl: string;
+  tmg: boolean;
+}
 
 export interface IAuthContext {
   siteUrl: string;
   strategy?: StrategyCode;
-  authOptions: IAuthOptions;
+  authOptions: IOnpremiseTmgCredentials;
   custom?: any;
   settings?: IAuthConfigSettings;
 }
@@ -42,7 +37,7 @@ export interface IAuthConfigSettings {
   defaultConfigPath?: string;
   encryptPassword?: boolean;
   saveConfigOnDisk?: boolean;
-  authOptions?: IAuthOptions;
+  authOptions?: IOnpremiseTmgCredentials;
   forcePrompts?: boolean;
   masterKey?: string;
   headlessMode?: boolean;

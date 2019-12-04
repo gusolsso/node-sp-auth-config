@@ -30,7 +30,7 @@ export const convertAuthContextToSettings = (authContext: IAuthContext, settings
 export const convertSettingsToAuthContext = (configObject: IAuthContextSettings, settings: IAuthConfigSettings = {}): IAuthContext => {
   const formattedContext: IAuthContext = {
     siteUrl: configObject.siteUrl || '',
-    strategy: configObject.strategy,
+    strategy: 'OnpremiseTmgCredentials',
     authOptions: {
       ...(configObject as any)
     },

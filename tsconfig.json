@@ -11,7 +11,7 @@
     "removeComments": true,
     "newLine": "LF",
     "skipLibCheck": true,
-    "types": ["node"],
+    "types": ["node", "inquirer"],
     "outDir": "dist"
   },
   "include": [

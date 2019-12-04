@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Cpass } from 'cpass';
-import { getAuth, IAuthOptions, IAuthResponse } from 'node-sp-auth';
 
 // Utils
 import { convertSettingsToAuthContext, saveConfigOnDisk, getHiddenPropertyName } from './utils';
@@ -9,28 +8,24 @@ import { getConfigFromEnvVariables } from './utils/env';
 
 // Step wizards
 import siteUrlWizard from './wizards/siteUrl';
-import strategyWizard from './wizards/chooseStrategy';
 import credentialsWizard from './wizards/askCredentials';
 import saveOnDiskWizard from './wizards/saveOnDisk';
 
-import { getStrategies } from './config'; // getTargetsTypes
+import { getStrategie } from './config'; // getTargetsTypes
 
 import {
   IAuthContext, IAuthContextSettings, IStrategyDictItem,
-  IAuthConfigSettings, ICheckPromptsResponse
+  IAuthConfigSettings, ICheckPromptsResponse, IOnpremiseTmgCredentials
 } from './interfaces';
 
 export class AuthConfig {
 
   private settings: IAuthConfigSettings;
-  // private targets: string[];
-  private strategies: IStrategyDictItem[];
   private context: IAuthContextSettings;
   private customData: any;
   private cpass: Cpass;
 
   constructor (settings: IAuthConfigSettings = {}) {
-    this.strategies = getStrategies();
     // this.targets = getTargetsTypes();
     const envMode = process.env.SPAUTH_ENV || process.env.NODE_ENV;
     const headlessMode = typeof settings.headlessMode !== 'undefined' ? settings.headlessMode : envMode === 'production';
@@ -70,8 +65,6 @@ export class AuthConfig {
     /* === Run Wizard === */
     // Step 1: Require SharePoint URL
     let answersResult = await siteUrlWizard(authContext, this.settings, {});
-    // Step 2: SharePoint Online/OnPremise autodetection
-    answersResult = await strategyWizard(authContext, this.settings, answersResult);
     // Step 3: Ask for strategy specific parameters
     answersResult = await credentialsWizard(authContext, this.settings, answersResult);
     // Step 4: Save on disk
@@ -80,10 +73,6 @@ export class AuthConfig {
     }
     answersResult = await saveOnDiskWizard(authContext, this.settings, answersResult);
     return convertSettingsToAuthContext(answersResult as any, this.settings);
-  }
-
-  private tryAuth = (authContext: IAuthContext): Promise<IAuthResponse> => {
-    return getAuth(authContext.siteUrl, authContext.authOptions) as any;
   }
 
   private checkForPrompts = async (): Promise<ICheckPromptsResponse> => {
@@ -135,21 +124,12 @@ export class AuthConfig {
 
     this.context = checkObj.jsonRawData as IAuthContextSettings;
 
-    let withPassword: boolean;
-    const strategies = this.strategies.filter(strategy => {
-      return strategy.id === this.context.strategy;
-    });
+    const strategie = getStrategie();
 
     const passwordPropertyName = getHiddenPropertyName(this.context);
 
-    if (strategies.length === 1) {
-      withPassword = strategies[0].withPassword;
-    } else {
-      withPassword = typeof this.context[passwordPropertyName] !== 'undefined';
-    }
-
     // Strategies with password
-    if (withPassword) {
+    if (strategie.withPassword) {
       const initialPassword = `${this.context[passwordPropertyName] || ''}`;
       if (!this.context[passwordPropertyName]) {
         checkObj.needPrompts = true;
@@ -170,28 +150,13 @@ export class AuthConfig {
     }
 
     // Verify strategy parameters
-    if (strategies.length === 1) {
-      if (!checkObj.needPrompts) {
-        checkObj.needPrompts = !strategies[0].verifyCallback(this.context.siteUrl, this.context);
-      }
-      return checkObj;
-    } else {
-      // No strategies found
-      if (checkObj.needPrompts) {
-        return checkObj;
-      } else {
-        try {
-          await this.tryAuth(checkObj.authContext);
-          // checkObj.needPrompts = false;
-        } catch (ex) {
-          checkObj.needPrompts = true;
-        }
-        return checkObj;
-      }
+    if (!checkObj.needPrompts) {
+      checkObj.needPrompts = !strategie.verifyCallback(this.context.siteUrl, this.context);
     }
+    return checkObj;
   }
 
-  private getJsonContent = (filePath: string, jsonData?: IAuthOptions): { exists: boolean; jsonRawData: any } => {
+  private getJsonContent = (filePath: string, jsonData?: IOnpremiseTmgCredentials): { exists: boolean; jsonRawData: any } => {
     if (typeof jsonData === 'undefined') {
       const exists = fs.existsSync(filePath);
       let jsonRawData: any = {};
@@ -215,4 +180,3 @@ export class AuthConfig {
 }
 
 export { IAuthContext, IAuthConfigSettings } from './interfaces';
-export { IAuthOptions } from 'node-sp-auth';

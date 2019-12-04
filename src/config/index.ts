@@ -1,85 +1,30 @@
-import * as spauth from 'node-sp-auth';
-import { IStrategyDictItem } from '../interfaces';
+import { IStrategyDictItem, IOnpremiseTmgCredentials } from '../interfaces';
+import * as url from 'url';
 
-export const getTargetsTypes = (): string[] => {
-  return ['Online', 'OnPremise'];
-};
+function isOnPremUrl(siteUrl: string): boolean {
+  let host: string = (url.parse(siteUrl)).host;
+  return host.indexOf('.sharepoint.com') === -1 && host.indexOf('.sharepoint.cn') === -1 && host.indexOf('.sharepoint.de') === -1
+      && host.indexOf('.sharepoint-mil.us') === -1 && host.indexOf('.sharepoint.us') === -1;
+}
 
-export const getStrategies = (): IStrategyDictItem[] => {
-  const strategies: IStrategyDictItem[] = [
-    {
-      id: 'OnpremiseUserCredentials',
-      name: 'User credentials (NTLM)',
-      withPassword: true,
-      target: ['OnPremise'],
-      verifyCallback: spauth.isUserCredentialsOnpremise
-    },
-    {
-      id: 'AdfsUserCredentials',
-      name: 'ADFS user credentials (On-Prem)',
-      withPassword: true,
-      target: ['OnPremise'],
-      verifyCallback: (...args: any[]) => spauth.isAdfsCredentials(args[1])
-    },
-    {
-      id: 'OnpremiseFbaCredentials',
-      name: 'Form-based authentication (FBA)',
-      withPassword: true,
-      target: ['OnPremise'],
-      verifyCallback: spauth.isFbaCredentialsOnpremise
-    },
-    {
-      id: 'OnpremiseTmgCredentials',
-      name: 'Form-based authentication (Forefront TMG)',
-      withPassword: true,
-      target: ['OnPremise'],
-      verifyCallback: spauth.isTmgCredentialsOnpremise
-    },
-    {
-      id: 'OnPremiseAddinCredentials',
-      name: 'Add-In Only permissions (On-Prem)',
-      withPassword: false,
-      target: ['OnPremise'],
-      verifyCallback: (...args: any[]) => spauth.isAddinOnlyOnpremise(args[1])
-    },
-    {
-      id: 'UserCredentials',
-      name: 'User credentials (SAML/ADFS)',
-      withPassword: true,
-      target: ['Online'],
-      verifyCallback: spauth.isUserCredentialsOnline
-    },
-    {
-      id: 'OnlineAddinCredentials',
-      name: 'Add-In Only permissions',
-      withPassword: true,
-      target: ['Online'],
-      verifyCallback: (...args: any[]) => spauth.isAddinOnlyOnline(args[1])
-    },
-    {
-      id: 'OnDemandCredentials',
-      name: 'On-Demand credentials (Electron is required, not compatible with NTLM)',
-      withPassword: false,
-      target: ['Online', 'OnPremise'],
-      verifyCallback: (...args: any[]) => spauth.isOndemandCredentials(args[1])
-    },
-    // Office 365 Dedicated
-    {
-      id: 'UserCredentials',
-      name: 'User credentials - SAML/ADFS (SPO, O365 Dedicated)',
-      withPassword: true,
-      target: ['O365Dedicated'],
-      verifyCallback: spauth.isUserCredentialsOnline,
-      withSeparator: true
-    },
-    {
-      id: 'OnlineAddinCredentials',
-      name: 'Add-In Only permissions (SPO, O365 Dedicated)',
-      withPassword: true,
-      target: ['O365Dedicated'],
-      verifyCallback: (...args: any[]) => spauth.isAddinOnlyOnline(args[1])
-    },
-  ];
+function isTmgCredentialsOnpremise(siteUrl: string, T: IOnpremiseTmgCredentials): T is IOnpremiseTmgCredentials {
+  let isOnPrem: boolean = isOnPremUrl(siteUrl);
 
-  return strategies;
+  if (isOnPrem && (T).username !== undefined && (T).tmg) {
+    return true;
+  }
+
+  return false;
+}
+
+export const getStrategie = (): IStrategyDictItem => {
+  const strategie: IStrategyDictItem = {
+    id: 'OnpremiseTmgCredentials',
+    name: 'Form-based authentication (Forefront TMG)',
+    withPassword: true,
+    target: ['OnPremise'],
+    verifyCallback: isTmgCredentialsOnpremise
+  };
+
+  return strategie;
 };

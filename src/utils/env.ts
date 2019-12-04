@@ -1,22 +1,10 @@
 const authPropsMapping = {
   siteurl: 'siteUrl',
   strategy: 'strategy',
+  curl: 'curl',
   username: 'username',
   password: 'password',
-  relyingparty: 'relyingParty',
-  adfsurl: 'adfsUrl',
-  adfscookie: 'adfsCookie',
-  ondemand: 'ondemand',
-  clientid: 'clientId',
-  clientsecret: 'clientSecret',
-  issuerid: 'issuerId',
-  realm: 'realm',
-  rsaprivatekeypath: 'rsaPrivateKeyPath',
-  shathumbprint: 'shaThumbprint',
-  fba: 'fba',
   tmg: 'tmg',
-  domain: 'domain',
-  online: 'online'
 };
 
 export interface IAuthEnvProps {
