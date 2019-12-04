@@ -1,65 +1,27 @@
-# node-sp-auth-config - Config options builder for node-sp-auth (SharePoint Authentication in Node.js)
+# sp-auth-config - Config options builder for sp-auth (SharePoint Authentication in Node.js)
 
-[![NPM](https://nodei.co/npm/node-sp-auth-config.png?mini=true&downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/node-sp-auth-config/)
+`sp-auth-config` provides wizard-like approach for building and managing config files for [sp-auth](https://git.haxakon.se/fmv/sp-auth) (Node.js to SharePoint unattended http authentication). Includes CLI for generating config files from command prompt.
+This is fork from the original repository [node-sp-auth](https://github.com/s-KaiNet/node-sp-auth). 
+Where un-needed functionality has been removed, and some customization hs been made to better work with FMV sharepoint. 
 
-[![npm version](https://badge.fury.io/js/node-sp-auth-config.svg)](https://badge.fury.io/js/node-sp-auth-config)
-[![Downloads](https://img.shields.io/npm/dm/node-sp-auth-config.svg)](https://www.npmjs.com/package/node-sp-auth-config)
-[![Actions Status](https://github.com/koltyakov/node-sp-auth-config/workflows/Node%20CI/badge.svg)](https://github.com/koltyakov/node-sp-auth-config/actions)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkoltyakov%2Fnode-sp-auth-config.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkoltyakov%2Fnode-sp-auth-config?ref=badge_shield)
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/sharepoint-node/Lobby)
-
-`node-sp-auth-config` provides wizard-like approach for building and managing config files for [node-sp-auth](https://github.com/s-KaiNet/node-sp-auth) (Node.js to SharePoint unattended http authentication). Includes CLI for generating config files from command prompt.
 
 **Versions supported**:
 
-- SharePoint Online
 - SharePoint 2019
 - SharePoint 2016
 - SharePoint 2013
-- SharePoint 2010 (limited support)
 
 **Authentication options**:
 
-- SharePoint Online:
-  - User credentials (SAML/ADFS)
-  - Add-In Only permissions
-  - On-Demand authentication (using Electron popup)
 - SharePoint 2019, 2016, 2013:
-  - User credentials (NTLM, NTLM v2)
-  - ADFS user credentials
-  - Form-based authentication (FBA)
   - Form-based authentication (Forefront TMG)
-  - Add-In Only permissions
-  - On-Demand authentication (using Electron popup)
-- SharePoint 2010:
-  - User credentials (NTLM, NTMLv2)
-  - Form-based authentication (FBA)
-  - Form-based authentication (Forefront TMG)
+    - Sharepoint-url
+    - Username
+    - Password
+    - Curl
 
-Config layer and auth supports Office 365 Dedicated (SPO on custom domain) as well.
-
----
 
 ## How to use
-
-### Install
-
-```bash
-npm install node-sp-auth-config --save
-```
-
-or install globally to use as CLI:
-
-```bash
-npm install node-sp-auth-config -g
-```
-
-### Usage as CLI
-
-```bash
-sp-auth init --path ./config/private.config.json
-sp-auth --help # for help about parameters
-```
 
 ### Usage in TypeScript
 
@@ -135,5 +97,6 @@ Along with credentials props these service variables are used:
 
 
 ## License
+MIT License
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkoltyakov%2Fnode-sp-auth-config.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkoltyakov%2Fnode-sp-auth-config?ref=badge_large)
+Copyright (c) 2017-2018 Andrew Koltyakov
